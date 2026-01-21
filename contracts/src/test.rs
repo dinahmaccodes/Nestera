@@ -285,3 +285,27 @@ fn test_completed_plan() {
     assert!(plan.is_completed);
     assert_eq!(plan.balance, 10_000_000);
 }
+
+#[test]
+fn test_plan_type_patterns() {
+    // Test that we can extract values from each plan type variant
+    let lock_plan = PlanType::Lock(1234567);
+    if let PlanType::Lock(timestamp) = lock_plan {
+        assert_eq!(timestamp, 1234567);
+    }
+    
+    let goal_plan = PlanType::Goal(symbol_short!("car"), 2_000_000, 3u32);
+    if let PlanType::Goal(cat, amount, contrib) = goal_plan {
+        assert_eq!(cat, symbol_short!("car"));
+        assert_eq!(amount, 2_000_000);
+        assert_eq!(contrib, 3u32);
+    }
+    
+    let group_plan = PlanType::Group(999, true, 1u32, 5_000_000);
+    if let PlanType::Group(id, public, contrib, amount) = group_plan {
+        assert_eq!(id, 999);
+        assert!(public);
+        assert_eq!(contrib, 1u32);
+        assert_eq!(amount, 5_000_000);
+    }
+}
