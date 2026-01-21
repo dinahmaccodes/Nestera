@@ -117,3 +117,15 @@ fn test_data_key_admin() {
     let key = DataKey::Admin;
     assert_eq!(key, DataKey::Admin);
 }
+
+#[test]
+fn test_data_key_user() {
+    let env = Env::default();
+    let user_address = Address::generate(&env);
+    let key = DataKey::User(user_address.clone());
+    
+    match key {
+        DataKey::User(addr) => assert_eq!(addr, user_address),
+        _ => panic!("Expected User data key"),
+    }
+}
