@@ -1,6 +1,7 @@
 use soroban_sdk::{Address, Env};
 
-use crate::storage_types::{DataKey, SavingsError, User};
+use crate::errors::SavingsError;
+use crate::storage_types::{DataKey, User};
 
 /// Check if a user exists in storage
 ///
@@ -41,7 +42,7 @@ pub fn get_user(env: &Env, user: &Address) -> Result<User, SavingsError> {
 /// * `user` - The address of the user to initialize
 ///
 /// # Returns
-/// `Ok(())` on success, `Err(SavingsError::DuplicateUser)` if user already exists
+/// `Ok(())` on success, `Err(SavingsError::UserAlreadyExists)` if user already exists
 ///
 /// # Authorization
 /// Requires authorization from the user being initialized
@@ -51,7 +52,7 @@ pub fn initialize_user(env: &Env, user: Address) -> Result<(), SavingsError> {
 
     // Check if user already exists
     if user_exists(env, &user) {
-        return Err(SavingsError::DuplicateUser);
+        return Err(SavingsError::UserAlreadyExists);
     }
 
     // Create new user with default values

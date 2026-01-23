@@ -1,20 +1,4 @@
-use soroban_sdk::{contracttype, contracterror, Address,Symbol};
-
-/// Global error enum for the savings contract
-#[contracterror]
-#[derive(Copy, Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
-#[repr(u32)]
-pub enum SavingsError {
-    /// User already exists in the system
-    DuplicateUser = 1,
-    /// User not found in storage
-    UserNotFound = 2,
-    /// Unauthorized action
-    Unauthorized = 3,
-}
-
-/// Storage keys for contract data
-
+use soroban_sdk::{contracttype, Address, Symbol};
 
 /// User account data structure
 #[contracttype]
@@ -35,11 +19,6 @@ impl User {
         }
     }
 }
-
-// impl Default for User {
-//     fn default() -> Self {
-//         Self::new()
-//     }
 
 /// Represents the different types of savings plans available in Nestera
 #[contracttype]
@@ -64,6 +43,7 @@ pub struct SavingsPlan {
     /// Annual Percentage Yield (APY) as an integer (e.g., 500 = 5.00%)
     pub interest_rate: u32,
     pub is_completed: bool,
+    pub is_withdrawn: bool,
 }
 
 
