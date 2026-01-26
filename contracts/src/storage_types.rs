@@ -1,4 +1,4 @@
-use soroban_sdk::{contracttype, Address, Symbol};
+use soroban_sdk::{contracttype, Address, String, Symbol};
 
 /// Represents the different types of savings plans available in Nestera
 #[contracttype]
@@ -53,13 +53,15 @@ pub struct GroupSave {
     pub category: String,
     pub target_amount: i128,
     pub current_amount: i128,
-    pub contribution_type: u8,
+    pub contribution_type: u32,
     pub contribution_amount: i128,
     pub is_public: bool,
     pub member_count: u32,
     pub start_time: u64,
     pub end_time: u64,
     pub is_completed: bool,
+}
+
 /// Represents a Lock Save plan with fixed duration and maturity
 #[contracttype]
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -70,6 +72,21 @@ pub struct LockSave {
     pub interest_rate: u32,
     pub start_time: u64,
     pub maturity_time: u64,
+    pub is_withdrawn: bool,
+}
+
+/// Represents a Goal Save plan with target amount
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct GoalSave {
+    pub id: u64,
+    pub owner: Address,
+    pub goal_name: Symbol,
+    pub target_amount: i128,
+    pub current_amount: i128,
+    pub interest_rate: u32,
+    pub start_time: u64,
+    pub is_completed: bool,
     pub is_withdrawn: bool,
 }
 
@@ -88,13 +105,21 @@ pub enum DataKey {
     /// Maps group ID to GroupSave struct
     GroupSave(u64),
     /// Maps user address to list of GroupSave IDs they participate in
-    UserGroupSaves(Address), 
+    UserGroupSaves(Address),
+    /// Stores the next auto-incrementing GroupSave ID
+    NextGroupId,
     /// Maps lock plan ID to LockSave struct
     LockSave(u64),
     /// Maps user to a list of their LockSave IDs
     UserLockSaves(Address),
     /// Stores the next auto-incrementing LockSave ID
     NextLockId,
+    /// Maps goal plan ID to GoalSave struct
+    GoalSave(u64),
+    /// Maps user to a list of their GoalSave IDs
+    UserGoalSaves(Address),
+    /// Stores the next auto-incrementing GoalSave ID
+    NextGoalId,
 }
 
 /// Payload structure that the admin signs off-chain

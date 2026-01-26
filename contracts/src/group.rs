@@ -1,6 +1,6 @@
 use crate::errors::SavingsError;
 use crate::storage_types::{DataKey, GroupSave};
-use soroban_sdk::{Address, Env, Vec};
+use soroban_sdk::{Address, Env, String, Vec};
 
 /// Creates a new group savings plan.
 ///
@@ -35,7 +35,7 @@ pub fn create_group_save(
     description: String,
     category: String,
     target_amount: i128,
-    contribution_type: u8,
+    contribution_type: u32,
     contribution_amount: i128,
     is_public: bool,
     start_time: u64,
@@ -111,7 +111,7 @@ pub fn create_group_save(
 
     // Emit event for group creation
     env.events().publish(
-        (soroban_sdk::symbol_short!("create_group"), creator),
+        (soroban_sdk::symbol_short!("grp_new"), creator),
         group_id,
     );
 
