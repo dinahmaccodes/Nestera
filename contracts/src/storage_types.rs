@@ -149,9 +149,10 @@ pub struct MintPayload {
     pub expiry_duration: u64,
 }
 
+// View-specific structures (used by views.rs module)
 #[derive(Clone, Debug, Eq, PartialEq)]
 #[contracttype]
-pub struct LockSave {
+pub struct LockSaveView {
     pub plan_id: u64,
     pub balance: i128,
     pub start_time: u64,
@@ -162,7 +163,7 @@ pub struct LockSave {
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 #[contracttype]
-pub struct GoalSave {
+pub struct GoalSaveView {
     pub plan_id: u64,
     pub balance: i128,
     pub target_amount: i128,
@@ -175,7 +176,7 @@ pub struct GoalSave {
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 #[contracttype]
-pub struct GroupSave {
+pub struct GroupSaveView {
     pub plan_id: u64,
     pub balance: i128,
     pub target_amount: i128,

@@ -1,14 +1,14 @@
 use crate::errors::SavingsError;
-use crate::storage_types::{DataKey, GoalSave, GroupSave, LockSave, PlanType, SavingsPlan, User};
+use crate::storage_types::{DataKey, GoalSaveView, GroupSaveView, LockSaveView, PlanType, SavingsPlan, User};
 use soroban_sdk::{Address, Env, Vec};
 
 // ===========================================================================
 // Helper Functions to Convert SavingsPlan to Specific Types
 // ===========================================================================
 
-fn to_lock_save(plan: &SavingsPlan) -> Option<LockSave> {
+fn to_lock_save(plan: &SavingsPlan) -> Option<LockSaveView> {
     match plan.plan_type {
-        PlanType::Lock(locked_until) => Some(LockSave {
+        PlanType::Lock(locked_until) => Some(LockSaveView {
             plan_id: plan.plan_id,
             balance: plan.balance,
             start_time: plan.start_time,
@@ -20,9 +20,9 @@ fn to_lock_save(plan: &SavingsPlan) -> Option<LockSave> {
     }
 }
 
-fn to_goal_save(plan: &SavingsPlan) -> Option<GoalSave> {
+fn to_goal_save(plan: &SavingsPlan) -> Option<GoalSaveView> {
     match &plan.plan_type {
-        PlanType::Goal(goal_name, target_amount, contribution_type) => Some(GoalSave {
+        PlanType::Goal(goal_name, target_amount, contribution_type) => Some(GoalSaveView {
             plan_id: plan.plan_id,
             balance: plan.balance,
             target_amount: *target_amount,
@@ -36,9 +36,9 @@ fn to_goal_save(plan: &SavingsPlan) -> Option<GoalSave> {
     }
 }
 
-fn to_group_save(plan: &SavingsPlan) -> Option<GroupSave> {
+fn to_group_save(plan: &SavingsPlan) -> Option<GroupSaveView> {
     match plan.plan_type {
-        PlanType::Group(group_id, is_public, contribution_type, target_amount) => Some(GroupSave {
+        PlanType::Group(group_id, is_public, contribution_type, target_amount) => Some(GroupSaveView {
             plan_id: plan.plan_id,
             balance: plan.balance,
             target_amount,
@@ -60,7 +60,7 @@ fn to_group_save(plan: &SavingsPlan) -> Option<GroupSave> {
 pub fn get_user_ongoing_lock_saves(
     env: &Env,
     user: Address,
-) -> Result<Vec<LockSave>, SavingsError> {
+) -> Result<Vec<LockSaveView>, SavingsError> {
     if !crate::users::user_exists(env, &user) {
         return Err(SavingsError::UserNotFound);
     }
@@ -88,7 +88,7 @@ pub fn get_user_ongoing_lock_saves(
 pub fn get_user_matured_lock_saves(
     env: &Env,
     user: Address,
-) -> Result<Vec<LockSave>, SavingsError> {
+) -> Result<Vec<LockSaveView>, SavingsError> {
     if !crate::users::user_exists(env, &user) {
         return Err(SavingsError::UserNotFound);
     }
@@ -113,7 +113,7 @@ pub fn get_user_matured_lock_saves(
     Ok(matured_plans)
 }
 
-pub fn get_lock_save(env: &Env, user: Address, lock_id: u64) -> Result<LockSave, SavingsError> {
+pub fn get_lock_save(env: &Env, user: Address, lock_id: u64) -> Result<LockSaveView, SavingsError> {
     let key = DataKey::SavingsPlan(user, lock_id);
     let plan = env
         .storage()
@@ -128,7 +128,7 @@ pub fn get_lock_save(env: &Env, user: Address, lock_id: u64) -> Result<LockSave,
 // Goal Save Views
 // ===========================================================================
 
-pub fn get_user_live_goal_saves(env: &Env, user: Address) -> Result<Vec<GoalSave>, SavingsError> {
+pub fn get_user_live_goal_saves(env: &Env, user: Address) -> Result<Vec<GoalSaveView>, SavingsError> {
     if !crate::users::user_exists(env, &user) {
         return Err(SavingsError::UserNotFound);
     }
@@ -154,7 +154,7 @@ pub fn get_user_live_goal_saves(env: &Env, user: Address) -> Result<Vec<GoalSave
 pub fn get_user_completed_goal_saves(
     env: &Env,
     user: Address,
-) -> Result<Vec<GoalSave>, SavingsError> {
+) -> Result<Vec<GoalSaveView>, SavingsError> {
     if !crate::users::user_exists(env, &user) {
         return Err(SavingsError::UserNotFound);
     }
@@ -177,7 +177,7 @@ pub fn get_user_completed_goal_saves(
     Ok(completed_plans)
 }
 
-pub fn get_goal_save(env: &Env, user: Address, goal_id: u64) -> Result<GoalSave, SavingsError> {
+pub fn get_goal_save(env: &Env, user: Address, goal_id: u64) -> Result<GoalSaveView, SavingsError> {
     let key = DataKey::SavingsPlan(user, goal_id);
     let plan = env
         .storage()
@@ -192,7 +192,7 @@ pub fn get_goal_save(env: &Env, user: Address, goal_id: u64) -> Result<GoalSave,
 // Group Save Views
 // ===========================================================================
 
-pub fn get_user_live_group_saves(env: &Env, user: Address) -> Result<Vec<GroupSave>, SavingsError> {
+pub fn get_user_live_group_saves(env: &Env, user: Address) -> Result<Vec<GroupSaveView>, SavingsError> {
     if !crate::users::user_exists(env, &user) {
         return Err(SavingsError::UserNotFound);
     }
@@ -218,7 +218,7 @@ pub fn get_user_live_group_saves(env: &Env, user: Address) -> Result<Vec<GroupSa
 pub fn get_user_completed_group_saves(
     env: &Env,
     user: Address,
-) -> Result<Vec<GroupSave>, SavingsError> {
+) -> Result<Vec<GroupSaveView>, SavingsError> {
     if !crate::users::user_exists(env, &user) {
         return Err(SavingsError::UserNotFound);
     }
@@ -241,7 +241,7 @@ pub fn get_user_completed_group_saves(
     Ok(completed_plans)
 }
 
-pub fn get_group_save(env: &Env, user: Address, group_id: u64) -> Result<GroupSave, SavingsError> {
+pub fn get_group_save(env: &Env, user: Address, group_id: u64) -> Result<GroupSaveView, SavingsError> {
     let key = DataKey::SavingsPlan(user, group_id);
     let plan = env
         .storage()
