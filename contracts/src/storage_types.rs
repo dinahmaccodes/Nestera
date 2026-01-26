@@ -120,6 +120,10 @@ pub enum DataKey {
     UserGoalSaves(Address),
     /// Stores the next auto-incrementing GoalSave ID
     NextGoalId,
+    /// Maps (group_id, user) to their contribution amount
+    GroupMemberContribution(u64, Address),
+    /// Maps group_id to list of member addresses
+    GroupMembers(u64),
 }
 
 /// Payload structure that the admin signs off-chain

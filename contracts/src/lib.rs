@@ -379,6 +379,63 @@ impl NesteraContract {
         group::get_user_groups(&env, &user)
     }
 
+    /// Allows a user to join a public group savings plan.
+    ///
+    /// # Arguments
+    /// * `env` - The contract environment
+    /// * `user` - The address of the user joining the group
+    /// * `group_id` - The ID of the group to join
+    ///
+    /// # Returns
+    /// `Ok(())` on success, panics on error
+    pub fn join_group_save(env: Env, user: Address, group_id: u64) -> Result<(), SavingsError> {
+        group::join_group_save(&env, user, group_id)
+    }
+
+    /// Allows a group member to contribute funds to the group savings plan.
+    ///
+    /// # Arguments
+    /// * `env` - The contract environment
+    /// * `user` - The address of the user contributing
+    /// * `group_id` - The ID of the group
+    /// * `amount` - The amount to contribute (must be > 0)
+    ///
+    /// # Returns
+    /// `Ok(())` on success, panics on error
+    pub fn contribute_to_group_save(
+        env: Env,
+        user: Address,
+        group_id: u64,
+        amount: i128,
+    ) -> Result<(), SavingsError> {
+        group::contribute_to_group_save(&env, user, group_id, amount)
+    }
+
+    /// VIEW FUNCTION - Gets a member's contribution to a group.
+    ///
+    /// # Arguments
+    /// * `env` - The contract environment
+    /// * `group_id` - The group ID
+    /// * `user` - The user address
+    ///
+    /// # Returns
+    /// The member's total contribution amount
+    pub fn get_member_contribution(env: Env, group_id: u64, user: Address) -> i128 {
+        group::get_member_contribution(&env, group_id, &user)
+    }
+
+    /// VIEW FUNCTION - Gets all members of a group.
+    ///
+    /// # Arguments
+    /// * `env` - The contract environment
+    /// * `group_id` - The group ID
+    ///
+    /// # Returns
+    /// A vector of member addresses
+    pub fn get_group_members(env: Env, group_id: u64) -> Vec<Address> {
+        group::get_group_members(&env, group_id)
+    }
+
     // ========== Lock Save Functions ==========
 
     /// Creates a new Lock Save plan for a user
