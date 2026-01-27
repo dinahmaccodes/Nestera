@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Nestera | Group Savings on Stellar",
-  description: "Secure, transparent, and collaborative group saving plans powered by Soroban.",
+  title: "Nestera",
+  description: "Nestera savings platform",
 };
 
 /**
@@ -61,9 +61,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <main>
-          {children}
-        </main>
+        <header className="bg-gray-800 text-white p-4 text-center font-bold">
+          Nestera
+        </header>
+        {children}
       </body>
     </html>
   );
